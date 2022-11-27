@@ -16,7 +16,10 @@ Node:
 const ytmp3 = require("yt-mp3")
 const query = "Lo-Fang #88"
 const outfile = "~/Downloads/lo-fang-88.mp3"
-ytmp3(query, outfile)
+
+ytmp3(query, outfile).then(filepath => {
+  // ...
+})
 ```
 
 Where the `outfile` parameter is optional.
