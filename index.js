@@ -2,33 +2,65 @@ const { Innertube } = require("youtubei.js")
 const { kebabify } = require("@jrc03c/js-text-tools")
 const { WritableStream } = require("node:stream/web")
 const fs = require("fs")
+const path = require("path")
+const process = require("process")
 
-Innertube.create().then(yt => {
-  const query = "Lo-Fang #88"
+function ytmp3(query, outfile) {
+  return new Promise((resolve, reject) => {
+    try {
+      return Innertube.create().then(async yt => {
+        console.log("Searching for:", query)
 
-  yt.search(query).then(search => {
-    if (search.results.length > 0) {
-      const result = search.results[0]
-      const id = result.id
-      const filename = kebabify(result.title.text) + ".mp3"
+        const search = await yt.search(query)
 
-      yt.download(id, {
-        type: "audio",
-        quality: "best",
-        format: "mp4",
-      }).then(stream => {
-        const file = fs.createWriteStream(filename)
+        if (search.results.length > 0) {
+          const result = search.results[0]
+          const id = result.id
 
-        const writableStream = new WritableStream({
-          write(chunk) {
-            file.write(chunk)
-          },
-        })
+          const filename = path.resolve(
+            outfile || kebabify(result.title.text) + ".mp3"
+          )
 
-        stream.pipeTo(writableStream)
+          console.log(`Found: "${result.title.text}"`)
+          console.log("Downloading...")
+
+          const stream = await yt.download(id, {
+            type: "audio",
+            quality: "best",
+            format: "mp4",
+          })
+
+          const file = fs.createWriteStream(filename)
+
+          const writableStream = new WritableStream({
+            write(chunk) {
+              file.write(chunk)
+            },
+
+            close() {
+              console.log(`Saved to: ${filename}`)
+              return resolve()
+            },
+          })
+
+          stream.pipeTo(writableStream)
+        } else {
+          console.log("No results found!")
+          return null
+        }
       })
-    } else {
-      throw new Error(`No results for the query "${query}"!`)
+    } catch (e) {
+      return reject(e)
     }
   })
-})
+}
+
+if (require.main === module) {
+  if (process.argv.length < 3 || process.argv.length > 4) {
+    throw new Error("Syntax is: yt-mp3 'some query' [/some/path.mp3]")
+  }
+
+  const query = process.argv[2]
+  const outfile = process.argv[3]
+  ytmp3(query, outfile)
+}
