@@ -16,5 +16,8 @@
   "dependencies": {
     "@jrc03c/js-text-tools": "^0.0.1",
     "youtubei.js": "^2.3.2"
+  },
+  "bin": {
+    "yt-mp3": "./bin.js"
   }
 }

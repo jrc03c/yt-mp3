@@ -3,9 +3,8 @@ const { kebabify } = require("@jrc03c/js-text-tools")
 const { WritableStream } = require("node:stream/web")
 const fs = require("fs")
 const path = require("path")
-const process = require("process")
 
-function ytmp3(query, outfile) {
+module.exports = function ytmp3(query, outfile) {
   return new Promise((resolve, reject) => {
     try {
       return Innertube.create().then(async yt => {
@@ -53,14 +52,4 @@ function ytmp3(query, outfile) {
       return reject(e)
     }
   })
-}
-
-if (require.main === module) {
-  if (process.argv.length < 3 || process.argv.length > 4) {
-    throw new Error("Syntax is: yt-mp3 'some query' [/some/path.mp3]")
-  }
-
-  const query = process.argv[2]
-  const outfile = process.argv[3]
-  ytmp3(query, outfile)
 }
