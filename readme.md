@@ -6,6 +6,10 @@
 
 ```bash
 npm install --save https://github.com/jrc03c/yt-mp3
+
+# and then, if you want to use it on the command line:
+cd yt-mp3
+npm link
 ```
 
 # Usage
