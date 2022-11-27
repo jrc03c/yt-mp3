@@ -14,7 +14,7 @@ npm link
 
 # Usage
 
-Node:
+**Node:**
 
 ```js
 const ytmp3 = require("yt-mp3")
@@ -28,7 +28,7 @@ ytmp3(query, outfile).then(filepath => {
 
 Where the `outfile` parameter is optional.
 
-CLI:
+**CLI:**
 
 ```bash
 yt-mp3 "Lo-Fang #88" ~/Downloads/lo-fang-88.mp3
